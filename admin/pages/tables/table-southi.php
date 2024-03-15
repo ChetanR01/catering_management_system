@@ -13,7 +13,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["item_name"])) {
     $img = $target_dir . basename($_FILES["item_image"]["name"]);
     move_uploaded_file($_FILES["item_image"]["tmp_name"], $img);
 
-    $sql = "INSERT INTO menu_south (name, category, price, descr, img) 
+    $sql = "INSERT INTO menu_items (name, category, price, descr, img) 
             VALUES ('$name', '$category', '$price', '$desc', '$img')";
 
     if ($conn->query($sql) === TRUE) {
@@ -35,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
   $desc = $_POST['desc'];
 
   // Get the current data of the item from the database
-  $currentDataQuery = "SELECT name, category, price, descr, img FROM menu_south WHERE id = $item_id";
+  $currentDataQuery = "SELECT name, category, price, descr FROM menu_items WHERE id = $item_id";
   $result = mysqli_query($conn, $currentDataQuery);
   $currentData = mysqli_fetch_assoc($result);
 
@@ -43,13 +43,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
     $category != $currentData['category'] ||
     $price != $currentData['price'] ||
     $desc != $currentData['descr']) {
-    $target_dir = "uploads/";
-    $img = $target_dir . basename($_FILES["item_image"]["name"]);
-    move_uploaded_file($_FILES["item_image"]["tmp_name"], $img);
+    // $target_dir = "uploads/";
+    // $img = $target_dir . basename($_FILES["item_image"]["name"]);
+    // move_uploaded_file($_FILES["item_image"]["tmp_name"], $img);
 
-    var_dump($img); 
+    // var_dump($img); 
 
-    $stmt = $conn->prepare("UPDATE menu_south SET name=?, category=?, price=?, descr=?, img=? WHERE id=?");
+    $stmt = $conn->prepare("UPDATE menu_items SET name=?, category=?, price=?, descr=? WHERE id=?");
     $stmt->bind_param("ssdssi", $name, $category, $price, $desc, $img, $item_id);
 
     if ($stmt->execute()) {
@@ -59,8 +59,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
     }
 
     // Update the 'img' column in the database with the new file path
-    $updateImgQuery = "UPDATE menu_south SET img='$img' WHERE id=$item_id";
-    $conn->query($updateImgQuery);
+    // $updateImgQuery = "UPDATE menu_items SET img='$img' WHERE id=$item_id";
+    // $conn->query($updateImgQuery);
 
     $stmt->close();
     } else {
@@ -78,13 +78,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
 // if ($_SERVER["REQUEST_METHOD"] == "POST") {
 //   $item_id = mysqli_real_escape_string($conn, $_POST["item_id"]);
   
-//   $delete_query = "DELETE FROM menu_south WHERE id = '$item_id'";
+//   $delete_query = "DELETE FROM menu_items WHERE id = '$item_id'";
 //   }
 //   // header("location: basic-table.php");
   if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $item_id = mysqli_real_escape_string($conn, $_POST["item_id"]);
 
-    $delete_query = "DELETE FROM menu_south WHERE id = '$item_id'";
+    $delete_query = "DELETE FROM menu_items WHERE id = '$item_id'";
     
     // Execute the delete query
     if (mysqli_query($conn, $delete_query)) {
@@ -263,38 +263,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../pages/forms/basic_elements.php">
-              <i class="ti-layout-list-post menu-icon"></i>
-              <span class="menu-title">Form elements</span>
+            <a class="nav-link" href="basic-table.php">
+              <i class="ti-view-list-alt menu-icon fa fa-star" aria-hidden="true"></i>
+              <span class="menu-title">Premium Menu</span>
             </a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="../../pages/charts/chartjs.php">
-              <i class="ti-pie-chart menu-icon"></i>
-              <span class="menu-title">Charts</span>
+            <a class="nav-link" href="table-southi.php">
+            <i class="ti-view-list-alt menu-icon fa fa-cutlery" aria-hidden="true"></i>
+              <span class="menu-title">Normal Menu</span>
             </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="../../pages/tables/basic-table.php">
-              <i class="ti-view-list-alt menu-icon fa fa-cutlery" aria-hidden="true"></i>
-              <span class="menu-title">Menu</span>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" data-bs-toggle="collapse" href="#auth" aria-expanded="false" aria-controls="auth">
-              <i class="ti-user menu-icon"></i>
-              <span class="menu-title">User Pages</span>
-              <i class="menu-arrow"></i>
-            </a>
-            <div class="collapse" id="auth">
-              <ul class="nav flex-column sub-menu">
-                <li class="nav-item"> <a class="nav-link" href="../../pages/samples/login.php"> Login </a></li>
-                <li class="nav-item"> <a class="nav-link" href="../../pages/samples/login-2.php"> Login 2 </a></li>
-                <li class="nav-item"> <a class="nav-link" href="../../pages/samples/register.php"> Register </a></li>
-                <li class="nav-item"> <a class="nav-link" href="../../pages/samples/register-2.php"> Register 2 </a></li>
-                <li class="nav-item"> <a class="nav-link" href="../../pages/samples/lock-screen.php"> Lockscreen </a></li>
-              </ul>
-            </div>
           </li>
         </ul>
       </nav>
@@ -305,7 +283,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
             <div class="col-md-12 grid-margin">
               <div class="d-flex justify-content-between align-items-center">
                 <div>
-                  <h4 class="font-weight-bold mb-0">Menu Items</h4>
+                  <h4 class="font-weight-bold mb-0">Menu Items | Normal Menu</h4>
                 </div>
                 <div>
                     <button type="button" style="display: block;" id="addItemFormBtn" onclick="addItemForm()" class="btn btn-primary btn-icon-text btn-rounded">
@@ -331,16 +309,22 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
                   </div>
                   <div class="form-group">
                     <label for="exampleSelectGender">Category</label>
-                      <select required class="form-control" id="category" name="category">
-                        <option style="height: 10px !important;">Rice</option>
-                        <option style="height: 10px !important;">Dal</option>
-                        <option style="height: 10px !important;">Roti/Paratha/Bread</option>
-                        <option style="height: 10px !important;">Main Course</option>
-                        <option style="height: 10px !important;">Curries</option>
-                        <option style="height: 10px !important;">Sweet</option>
-                        <option style="height: 10px !important;">Chat</option>
-
-                      </select>
+                    <select required class="form-control" id="category" name="category">
+                      <option style="height: 10px !important;">Sabji</option>
+                      <option style="height: 10px !important;">Roti/Naan</option>
+                      <option style="height: 10px !important;">Rice</option>
+                      <option style="height: 10px !important;">Dal</option>
+                      <option style="height: 10px !important;">South Indian</option>
+                      <option style="height: 10px !important;">Pizza</option>
+                      <option style="height: 10px !important;">Pasta</option>
+                      <option style="height: 10px !important;">Bread</option>
+                      <option style="height: 10px !important;">Chinese</option>
+                      <option style="height: 10px !important;">Desserts</option>
+                      <option style="height: 10px !important;">Ice Cream</option>
+                      <option style="height: 10px !important;">Mocktail</option>
+                      <option style="height: 10px !important;">Starter</option>
+                      <option style="height: 10px !important;">Chaat</option>
+                    </select>
                     </div>
                   <div class="form-group">
                     <label>Upload Image</label>
@@ -371,7 +355,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
           <?php
           include __DIR__ . '/../../../connection.php';
 
-          $sql = "SELECT * FROM menu_south";
+          $sql = "SELECT * FROM menu_items";
           $rice_cat_data = mysqli_query($conn, $sql);
           $rice_row = mysqli_num_rows($rice_cat_data);
 
@@ -400,27 +384,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
                                   <div class="form-group">
                                       <label for="exampleSelectGender">Category</label>
                                       <select required class="form-control" id="category" name="category">
+                                          <option style="height: 10px !important;">Sabji</option>
+                                          <option style="height: 10px !important;">Roti/Naan</option>
                                           <option style="height: 10px !important;">Rice</option>
                                           <option style="height: 10px !important;">Dal</option>
-                                          <option style="height: 10px !important;">Roti/Paratha/Bread</option>
-                                          <option style="height: 10px !important;">Main Course</option>
-                                          <option style="height: 10px !important;">Curries</option>
-                                          <option style="height: 10px !important;">Sweet</option>
-                                          <option style="height: 10px !important;">Chat</option>
+                                          <option style="height: 10px !important;">South Indian</option>
+                                          <option style="height: 10px !important;">Pizza</option>
+                                          <option style="height: 10px !important;">Pasta</option>
+                                          <option style="height: 10px !important;">Bread</option>
+                                          <option style="height: 10px !important;">Chinese</option>
+                                          <option style="height: 10px !important;">Desserts</option>
+                                          <option style="height: 10px !important;">Ice Cream</option>
+                                          <option style="height: 10px !important;">Mocktail</option>
+                                          <option style="height: 10px !important;">Starter</option>
+                                          <option style="height: 10px !important;">Chaat</option>
                                       </select>
-                                  </div>
-                                  <div class="form-group">
-                                      <label>Upload Image</label>
-                                      <input value="'.$item_name.'" style="height: 10px !important;" type="file" name="item_image" id="fileToUpload" class="file-upload-default">
-                                      <div class="input-group col-xs-12">
-                                          <input style="height: 10px !important;" type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
-                                          <input type="hidden" name="item_id" value="' . $item_id . '">
-                                          <span style="height: 10px !important;" class="input-group-append">
-                                              <button style="height: 10px !important; padding:14px !important; margin-bottom:5px !important" class="file-upload-browse btn btn-primary" type="button"><i class="fa fa-upload" aria-hidden="true"></i></button>
-                                          </span>
-                                      </div>
-                                  </div>
-                                  <div class="form-group">
+                                  </div>';
+                                  // <div class="form-group">
+                                  //     <label>Upload Image</label>
+                                  //     <input value="'.$item_name.'" style="height: 10px !important;" type="file" name="item_image" id="fileToUpload" class="file-upload-default">
+                                  //     <div class="input-group col-xs-12">
+                                  //         <input style="height: 10px !important;" type="text" class="form-control file-upload-info" disabled placeholder="Upload Image">
+                                  //         <input type="hidden" name="item_id" value="' . $item_id . '">
+                                  //         <span style="height: 10px !important;" class="input-group-append">
+                                  //             <button style="height: 10px !important; padding:14px !important; margin-bottom:5px !important" class="file-upload-browse btn btn-primary" type="button"><i class="fa fa-upload" aria-hidden="true"></i></button>
+                                  //         </span>
+                                  //     </div>
+                                  // </div>
+                                  echo '<div class="form-group">
                                       <label for="exampleInputCity1">Price</label>
                                       <input value="'.$price.'" style="height: 10px !important;" type="text" class="form-control" name="price" id="price" placeholder="Price">
                                   </div>
@@ -448,7 +439,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
             <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Rice</h4>
+                  <h4 class="card-title">Sabji</h4>
                   <div class="table-responsive pt-1">
                     <table class="table table-bordered">
                       <thead>
@@ -473,7 +464,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
                       <tbody class="pt-1">
                       <?php 
                         include __DIR__ . '/../../../connection.php';
-                        $sql = "SELECT id, name, price FROM menu_south WHERE category='Rice'";
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Sabji'";
                         $rice_cat_data = mysqli_query($conn, $sql);
                         $rice_row = mysqli_num_rows($rice_cat_data);
                         if($rice_row>0){
@@ -487,6 +478,146 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
                           echo '  <td style="width: 5%;">';
                           // echo '    <button type="button" onclick="updateItemForm(); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
                           echo '    <button type="button" onclick="updateItemForm(' . $item_id . '); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+                          echo '      <i style="font-size: 20px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>';
+                          echo '    </button>';
+                          echo '  </td>';
+                          echo '  <td style="width: 5%;">';
+                          echo '    <form method="post" action="basic-table.php">';
+                          echo '      <input type="hidden" name="item_id" value="' . $item_id . '">';
+                          echo '      <button type="submit" onclick="return confirm(\'Are you sure you want to delete this item?\')" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(255, 0, 0);">';
+                          echo '        <i style="font-size: 20px;" class="fa fa-trash" aria-hidden="true"></i>';
+                          echo '      </button>';
+                          echo '    </form>';
+                          echo '  </td>';
+                          echo '</tr>';
+                          }
+                        }
+                        else{
+                            echo '  <td style="padding:10px 0; text-align:center; font-size:16px" colspan=5>';
+                             echo ' Category is empty, please add menu items ! ';
+                             echo '  </td>';
+                        }
+                      ?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Roti/Naan</h4>
+                  <div class="table-responsive pt-3">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>
+                            Sr.No.
+                          </th>
+                          <th>
+                            Name
+                          </th>
+                          <th>
+                            Price
+                          </th>
+                          <th>
+                            Edit
+                          </th>
+                          <th>
+                            Delete
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <?php 
+                        include __DIR__ . '/../../../connection.php';
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Roti/Naan'";
+                        $rice_cat_data = mysqli_query($conn, $sql);
+                        $rice_row = mysqli_num_rows($rice_cat_data);
+                        if($rice_row>0){
+                          $counter = 1;
+                          while ($rice_row_no = mysqli_fetch_assoc($rice_cat_data)){
+                            $item_id = $rice_row_no['id'];
+                           echo '<tr style="padding: 5px 5px !important">';
+                           echo '  <td>' . $counter++ . '</td>';
+                          echo '  <td>'.$rice_row_no['name'].'</td>';
+                          echo '  <td>'.$rice_row_no['price'].'</td>';
+                          echo '  <td style="width: 5%;">';
+                          // echo '    <button type="button" onclick="updateItemForm(); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+                          echo '    <button type="button" onclick="updateItemForm(' . $item_id . '); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+
+                          echo '      <i style="font-size: 20px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>';
+                          echo '    </button>';
+                          echo '  </td>';
+                          echo '  <td style="width: 5%;">';
+                          echo '    <form method="post" action="basic-table.php">';
+                          echo '      <input type="hidden" name="item_id" value="' . $item_id . '">';
+                          echo '      <button type="submit" onclick="return confirm(\'Are you sure you want to delete this item?\')" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(255, 0, 0);">';
+                          echo '        <i style="font-size: 20px;" class="fa fa-trash" aria-hidden="true"></i>';
+                          echo '      </button>';
+                          echo '    </form>';
+                          echo '  </td>';
+                          echo '</tr>';
+                          }
+                        }
+                        else{
+                            echo '  <td style="padding:10px 0; text-align:center; font-size:16px" colspan=5>';
+                             echo ' Category is empty, please add menu items ! ';
+                             echo '  </td>';
+                        }
+                      ?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Rice</h4>
+                  <div class="table-responsive pt-3">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>
+                            Sr.No.
+                          </th>
+                          <th>
+                            Name
+                          </th>
+                          <th>
+                            Price
+                          </th>
+                          <th>
+                            Edit
+                          </th>
+                          <th>
+                            Delete
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <?php 
+                        include __DIR__ . '/../../../connection.php';
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Rice'";
+                        $rice_cat_data = mysqli_query($conn, $sql);
+                        $rice_row = mysqli_num_rows($rice_cat_data);
+                        if($rice_row>0){
+                          $counter = 1;
+                          while ($rice_row_no = mysqli_fetch_assoc($rice_cat_data)){
+                            $item_id = $rice_row_no['id'];
+                           echo '<tr style="padding: 5px 5px !important">';
+                           echo '  <td>' . $counter++ . '</td>';
+                          echo '  <td>'.$rice_row_no['name'].'</td>';
+                          echo '  <td>'.$rice_row_no['price'].'</td>';
+                          echo '  <td style="width: 5%;">';
+                          // echo '    <button type="button" onclick="updateItemForm(); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+                          echo '    <button type="button" onclick="updateItemForm(' . $item_id . '); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+
                           echo '      <i style="font-size: 20px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>';
                           echo '    </button>';
                           echo '  </td>';
@@ -542,7 +673,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
                       <tbody>
                       <?php 
                         include __DIR__ . '/../../../connection.php';
-                        $sql = "SELECT id, name, price FROM menu_south WHERE category='Dal'";
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Dal'";
                         $rice_cat_data = mysqli_query($conn, $sql);
                         $rice_row = mysqli_num_rows($rice_cat_data);
                         if($rice_row>0){
@@ -587,7 +718,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
             <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Roti/Paratha/Bread</h4>
+                  <h4 class="card-title">Southi Indian</h4>
                   <div class="table-responsive pt-3">
                     <table class="table table-bordered">
                       <thead>
@@ -612,7 +743,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
                       <tbody>
                       <?php 
                         include __DIR__ . '/../../../connection.php';
-                        $sql = "SELECT id, name, price FROM menu_south WHERE category='Roti/Paratha/Bread'";
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Southi Indian'";
                         $rice_cat_data = mysqli_query($conn, $sql);
                         $rice_row = mysqli_num_rows($rice_cat_data);
                         if($rice_row>0){
@@ -657,7 +788,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
             <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Main Course Special</h4>
+                  <h4 class="card-title">Pizza</h4>
                   <div class="table-responsive pt-3">
                     <table class="table table-bordered">
                       <thead>
@@ -682,7 +813,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
                       <tbody>
                       <?php 
                         include __DIR__ . '/../../../connection.php';
-                        $sql = "SELECT id, name, price FROM menu_south WHERE category='Main Course'";
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Pizza'";
                         $rice_cat_data = mysqli_query($conn, $sql);
                         $rice_row = mysqli_num_rows($rice_cat_data);
                         if($rice_row>0){
@@ -727,7 +858,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
             <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Curries</h4>
+                  <h4 class="card-title">Pasta</h4>
                   <div class="table-responsive pt-3">
                     <table class="table table-bordered">
                       <thead>
@@ -752,7 +883,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
                       <tbody>
                       <?php 
                         include __DIR__ . '/../../../connection.php';
-                        $sql = "SELECT id, name, price FROM menu_south WHERE category='Curries'";
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Pasta'";
                         $rice_cat_data = mysqli_query($conn, $sql);
                         $rice_row = mysqli_num_rows($rice_cat_data);
                         if($rice_row>0){
@@ -797,7 +928,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
             <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Sweet</h4>
+                  <h4 class="card-title">Bread</h4>
                   <div class="table-responsive pt-3">
                     <table class="table table-bordered">
                       <thead>
@@ -822,7 +953,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
                       <tbody>
                       <?php 
                         include __DIR__ . '/../../../connection.php';
-                        $sql = "SELECT id, name, price FROM menu_south WHERE category='Sweet'";
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Bread'";
                         $rice_cat_data = mysqli_query($conn, $sql);
                         $rice_row = mysqli_num_rows($rice_cat_data);
                         if($rice_row>0){
@@ -867,7 +998,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
             <div class="col-lg-12 grid-margin stretch-card">
               <div class="card">
                 <div class="card-body">
-                  <h4 class="card-title">Chat</h4>
+                  <h4 class="card-title">Chinese</h4>
                   <div class="table-responsive pt-3">
                     <table class="table table-bordered">
                       <thead>
@@ -892,7 +1023,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
                       <tbody>
                       <?php 
                         include __DIR__ . '/../../../connection.php';
-                        $sql = "SELECT id, name, price FROM menu_south WHERE category='Chat'";
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Chinese'";
                         $rice_cat_data = mysqli_query($conn, $sql);
                         $rice_row = mysqli_num_rows($rice_cat_data);
                         if($rice_row>0){
@@ -933,6 +1064,357 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
                 </div>
               </div>
             </div>
+
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Desserts</h4>
+                  <div class="table-responsive pt-3">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>
+                            Sr.No.
+                          </th>
+                          <th>
+                            Name
+                          </th>
+                          <th>
+                            Price
+                          </th>
+                          <th>
+                            Edit
+                          </th>
+                          <th>
+                            Delete
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <?php 
+                        include __DIR__ . '/../../../connection.php';
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Desserts'";
+                        $rice_cat_data = mysqli_query($conn, $sql);
+                        $rice_row = mysqli_num_rows($rice_cat_data);
+                        if($rice_row>0){
+                          $counter = 1;
+                          while ($rice_row_no = mysqli_fetch_assoc($rice_cat_data)){
+                            $item_id = $rice_row_no['id'];
+                           echo '<tr style="padding: 5px 5px !important">';
+                           echo '  <td>' . $counter++ . '</td>';
+                          echo '  <td>'.$rice_row_no['name'].'</td>';
+                          echo '  <td>'.$rice_row_no['price'].'</td>';
+                          echo '  <td style="width: 5%;">';
+                          // echo '    <button type="button" onclick="updateItemForm(); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+                          echo '    <button type="button" onclick="updateItemForm(' . $item_id . '); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+
+                          echo '      <i style="font-size: 20px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>';
+                          echo '    </button>';
+                          echo '  </td>';
+                          echo '  <td style="width: 5%;">';
+                          echo '    <form method="post" action="basic-table.php">';
+                          echo '      <input type="hidden" name="item_id" value="' . $item_id . '">';
+                          echo '      <button type="submit" onclick="return confirm(\'Are you sure you want to delete this item?\')" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(255, 0, 0);">';
+                          echo '        <i style="font-size: 20px;" class="fa fa-trash" aria-hidden="true"></i>';
+                          echo '      </button>';
+                          echo '    </form>';
+                          echo '  </td>';
+                          echo '</tr>';
+                          }
+                        }
+                        else{
+                            echo '  <td style="padding:10px 0; text-align:center; font-size:16px" colspan=5>';
+                             echo ' Category is empty, please add menu items ! ';
+                             echo '  </td>';
+                        }
+                      ?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Ice Cream</h4>
+                  <div class="table-responsive pt-3">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>
+                            Sr.No.
+                          </th>
+                          <th>
+                            Name
+                          </th>
+                          <th>
+                            Price
+                          </th>
+                          <th>
+                            Edit
+                          </th>
+                          <th>
+                            Delete
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <?php 
+                        include __DIR__ . '/../../../connection.php';
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Ice Cream'";
+                        $rice_cat_data = mysqli_query($conn, $sql);
+                        $rice_row = mysqli_num_rows($rice_cat_data);
+                        if($rice_row>0){
+                          $counter = 1;
+                          while ($rice_row_no = mysqli_fetch_assoc($rice_cat_data)){
+                            $item_id = $rice_row_no['id'];
+                           echo '<tr style="padding: 5px 5px !important">';
+                           echo '  <td>' . $counter++ . '</td>';
+                          echo '  <td>'.$rice_row_no['name'].'</td>';
+                          echo '  <td>'.$rice_row_no['price'].'</td>';
+                          echo '  <td style="width: 5%;">';
+                          // echo '    <button type="button" onclick="updateItemForm(); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+                          echo '    <button type="button" onclick="updateItemForm(' . $item_id . '); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+
+                          echo '      <i style="font-size: 20px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>';
+                          echo '    </button>';
+                          echo '  </td>';
+                          echo '  <td style="width: 5%;">';
+                          echo '    <form method="post" action="basic-table.php">';
+                          echo '      <input type="hidden" name="item_id" value="' . $item_id . '">';
+                          echo '      <button type="submit" onclick="return confirm(\'Are you sure you want to delete this item?\')" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(255, 0, 0);">';
+                          echo '        <i style="font-size: 20px;" class="fa fa-trash" aria-hidden="true"></i>';
+                          echo '      </button>';
+                          echo '    </form>';
+                          echo '  </td>';
+                          echo '</tr>';
+                          }
+                        }
+                        else{
+                            echo '  <td style="padding:10px 0; text-align:center; font-size:16px" colspan=5>';
+                             echo ' Category is empty, please add menu items ! ';
+                             echo '  </td>';
+                        }
+                      ?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Mocktail</h4>
+                  <div class="table-responsive pt-3">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>
+                            Sr.No.
+                          </th>
+                          <th>
+                            Name
+                          </th>
+                          <th>
+                            Price
+                          </th>
+                          <th>
+                            Edit
+                          </th>
+                          <th>
+                            Delete
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <?php 
+                        include __DIR__ . '/../../../connection.php';
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Mocktail'";
+                        $rice_cat_data = mysqli_query($conn, $sql);
+                        $rice_row = mysqli_num_rows($rice_cat_data);
+                        if($rice_row>0){
+                          $counter = 1;
+                          while ($rice_row_no = mysqli_fetch_assoc($rice_cat_data)){
+                            $item_id = $rice_row_no['id'];
+                           echo '<tr style="padding: 5px 5px !important">';
+                           echo '  <td>' . $counter++ . '</td>';
+                          echo '  <td>'.$rice_row_no['name'].'</td>';
+                          echo '  <td>'.$rice_row_no['price'].'</td>';
+                          echo '  <td style="width: 5%;">';
+                          // echo '    <button type="button" onclick="updateItemForm(); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+                          echo '    <button type="button" onclick="updateItemForm(' . $item_id . '); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+
+                          echo '      <i style="font-size: 20px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>';
+                          echo '    </button>';
+                          echo '  </td>';
+                          echo '  <td style="width: 5%;">';
+                          echo '    <form method="post" action="basic-table.php">';
+                          echo '      <input type="hidden" name="item_id" value="' . $item_id . '">';
+                          echo '      <button type="submit" onclick="return confirm(\'Are you sure you want to delete this item?\')" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(255, 0, 0);">';
+                          echo '        <i style="font-size: 20px;" class="fa fa-trash" aria-hidden="true"></i>';
+                          echo '      </button>';
+                          echo '    </form>';
+                          echo '  </td>';
+                          echo '</tr>';
+                          }
+                        }
+                        else{
+                            echo '  <td style="padding:10px 0; text-align:center; font-size:16px" colspan=5>';
+                             echo ' Category is empty, please add menu items ! ';
+                             echo '  </td>';
+                        }
+                      ?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Starter</h4>
+                  <div class="table-responsive pt-3">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>
+                            Sr.No.
+                          </th>
+                          <th>
+                            Name
+                          </th>
+                          <th>
+                            Price
+                          </th>
+                          <th>
+                            Edit
+                          </th>
+                          <th>
+                            Delete
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <?php 
+                        include __DIR__ . '/../../../connection.php';
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Starter'";
+                        $rice_cat_data = mysqli_query($conn, $sql);
+                        $rice_row = mysqli_num_rows($rice_cat_data);
+                        if($rice_row>0){
+                          $counter = 1;
+                          while ($rice_row_no = mysqli_fetch_assoc($rice_cat_data)){
+                            $item_id = $rice_row_no['id'];
+                           echo '<tr style="padding: 5px 5px !important">';
+                           echo '  <td>' . $counter++ . '</td>';
+                          echo '  <td>'.$rice_row_no['name'].'</td>';
+                          echo '  <td>'.$rice_row_no['price'].'</td>';
+                          echo '  <td style="width: 5%;">';
+                          // echo '    <button type="button" onclick="updateItemForm(); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+                          echo '    <button type="button" onclick="updateItemForm(' . $item_id . '); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+
+                          echo '      <i style="font-size: 20px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>';
+                          echo '    </button>';
+                          echo '  </td>';
+                          echo '  <td style="width: 5%;">';
+                          echo '    <form method="post" action="basic-table.php">';
+                          echo '      <input type="hidden" name="item_id" value="' . $item_id . '">';
+                          echo '      <button type="submit" onclick="return confirm(\'Are you sure you want to delete this item?\')" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(255, 0, 0);">';
+                          echo '        <i style="font-size: 20px;" class="fa fa-trash" aria-hidden="true"></i>';
+                          echo '      </button>';
+                          echo '    </form>';
+                          echo '  </td>';
+                          echo '</tr>';
+                          }
+                        }
+                        else{
+                            echo '  <td style="padding:10px 0; text-align:center; font-size:16px" colspan=5>';
+                             echo ' Category is empty, please add menu items ! ';
+                             echo '  </td>';
+                        }
+                      ?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-lg-12 grid-margin stretch-card">
+              <div class="card">
+                <div class="card-body">
+                  <h4 class="card-title">Chaat</h4>
+                  <div class="table-responsive pt-3">
+                    <table class="table table-bordered">
+                      <thead>
+                        <tr>
+                          <th>
+                            Sr.No.
+                          </th>
+                          <th>
+                            Name
+                          </th>
+                          <th>
+                            Price
+                          </th>
+                          <th>
+                            Edit
+                          </th>
+                          <th>
+                            Delete
+                          </th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                      <?php 
+                        include __DIR__ . '/../../../connection.php';
+                        $sql = "SELECT id, name, price FROM menu_items WHERE category='Chaat'";
+                        $rice_cat_data = mysqli_query($conn, $sql);
+                        $rice_row = mysqli_num_rows($rice_cat_data);
+                        if($rice_row>0){
+                          $counter = 1;
+                          while ($rice_row_no = mysqli_fetch_assoc($rice_cat_data)){
+                            $item_id = $rice_row_no['id'];
+                           echo '<tr style="padding: 5px 5px !important">';
+                           echo '  <td>' . $counter++ . '</td>';
+                          echo '  <td>'.$rice_row_no['name'].'</td>';
+                          echo '  <td>'.$rice_row_no['price'].'</td>';
+                          echo '  <td style="width: 5%;">';
+                          // echo '    <button type="button" onclick="updateItemForm(); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+                          echo '    <button type="button" onclick="updateItemForm(' . $item_id . '); scrollToTop();" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(0, 136, 255);">';
+
+                          echo '      <i style="font-size: 20px;" class="fa fa-pencil-square-o" aria-hidden="true"></i>';
+                          echo '    </button>';
+                          echo '  </td>';
+                          echo '  <td style="width: 5%;">';
+                          echo '    <form method="post" action="basic-table.php">';
+                          echo '      <input type="hidden" name="item_id" value="' . $item_id . '">';
+                          echo '      <button type="submit" onclick="return confirm(\'Are you sure you want to delete this item?\')" style="padding: 5px; border-radius:5px;border:none;outline:none; background-color:white; color:rgb(255, 0, 0);">';
+                          echo '        <i style="font-size: 20px;" class="fa fa-trash" aria-hidden="true"></i>';
+                          echo '      </button>';
+                          echo '    </form>';
+                          echo '  </td>';
+                          echo '</tr>';
+                          }
+                        }
+                        else{
+                            echo '  <td style="padding:10px 0; text-align:center; font-size:16px" colspan=5>';
+                             echo ' Category is empty, please add menu items ! ';
+                             echo '  </td>';
+                        }
+                      ?>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
           </div>
         </div>
         <!-- content-wrapper ends -->
@@ -960,7 +1442,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["update_name"])) {
   <script src="../../js/hoverable-collapse.js"></script>
   <script src="../../js/template.js"></script>
   <script src="../../js/todolist.js"></script>
-  <script src="../tables/tablejs.js"></script>
+  <script src="tablejs.js"></script>
   <!-- endinject -->
   <!-- Custom js for this page-->
   <!-- End custom js for this page-->
